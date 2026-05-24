@@ -1,4 +1,4 @@
-FROM node:22-slim
+FROM node:26-slim
 
 LABEL org.opencontainers.image.source="https://github.com/procrastivity/obsidian-sync-to-git" \
       org.opencontainers.image.description="Obsidian Headless sync image for obsidian-sync-to-git" \
