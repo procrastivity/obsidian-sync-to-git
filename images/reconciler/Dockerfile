@@ -1,4 +1,4 @@
-FROM alpine:3.20
+FROM alpine:3.23
 
 LABEL org.opencontainers.image.source="https://github.com/procrastivity/obsidian-sync-to-git" \
       org.opencontainers.image.description="Vault subpath to Git reconciler image for obsidian-sync-to-git" \
