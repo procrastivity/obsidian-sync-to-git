@@ -25,6 +25,10 @@ rsync -a --delete \
     --exclude='.obsidian' \
     --exclude='.trash' \
     --exclude='.git' \
+    --exclude='.github' \
+    --exclude='drafts' \
+    --exclude='README*' \
+    --exclude='LICENSE*' \
     "$VAULT/$SUBPATH/" "$REPO/"
 
 git add -A

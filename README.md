@@ -16,7 +16,7 @@ This repo publishes two Docker images to GitHub Container Registry:
 
 ## Usage
 
-Start from `examples/docker-compose.yml`, replace `OWNER`, set the required environment variables, then run the one-time Obsidian Headless setup documented in `docs/runtime-contract.md`.
+Start from `examples/compose.yaml`, replace `OWNER`, set the required environment variables, then run the one-time Obsidian Headless setup documented in `docs/runtime-contract.md`.
 
 ## Releasing
 
