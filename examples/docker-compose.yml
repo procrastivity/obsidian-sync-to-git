@@ -1,0 +1,31 @@
+services:
+  obsidian-sync:
+    image: ghcr.io/OWNER/obsidian-sync:${OBSIDIAN_SYNC_VERSION:-latest}
+    restart: unless-stopped
+    user: "${PUID:-1000}:${PGID:-1000}"
+    volumes:
+      - vault:/home/obsidian/vault
+      - ob-config:/home/obsidian/.config/obsidian
+
+  reconciler-example:
+    image: ghcr.io/OWNER/reconciler:${RECONCILER_VERSION:-latest}
+    restart: unless-stopped
+    user: "${PUID:-1000}:${PGID:-1000}"
+    depends_on:
+      - obsidian-sync
+    environment:
+      - GIT_REPO_URL=${EXAMPLE_REPO_URL}
+      - VAULT_SUBPATH=sites/example
+      - GH_TOKEN=${GH_TOKEN}
+      - GIT_EMAIL=${GIT_EMAIL:-content-sync@vps}
+      - GIT_NAME=${GIT_NAME:-VPS Content Sync}
+      - DEBOUNCE_SECONDS=${DEBOUNCE_SECONDS:-5}
+      - BACKSTOP_SECONDS=${BACKSTOP_SECONDS:-900}
+    volumes:
+      - vault:/vault:ro
+      - example-repo:/repo
+
+volumes:
+  vault:
+  ob-config:
+  example-repo:
