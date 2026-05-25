@@ -10,7 +10,7 @@ RUN apt-get update \
 
 RUN npm install -g obsidian-headless
 
-RUN mkdir -p /home/obsidian/vault /home/obsidian/.config/obsidian \
+RUN mkdir -p /home/obsidian/vault /home/obsidian/.config/obsidian-headless \
  && chown -R node:node /home/obsidian \
  && chmod -R a+rwX /home/obsidian
 
