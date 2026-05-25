@@ -1,14 +1,14 @@
 services:
   obsidian-sync:
-    image: ghcr.io/OWNER/obsidian-sync:${OBSIDIAN_SYNC_VERSION:-latest}
+    image: ghcr.io/procrastivity/obsidian-sync:${OBSIDIAN_SYNC_VERSION:-latest}
     restart: unless-stopped
     user: "${PUID:-1000}:${PGID:-1000}"
     volumes:
       - vault:/home/obsidian/vault
-      - ob-config:/home/obsidian/.config/obsidian
+      - ob-config:/home/obsidian/.config/obsidian-headless
 
   reconciler-example:
-    image: ghcr.io/OWNER/reconciler:${RECONCILER_VERSION:-latest}
+    image: ghcr.io/procrastivity/reconciler:${RECONCILER_VERSION:-latest}
     restart: unless-stopped
     user: "${PUID:-1000}:${PGID:-1000}"
     depends_on:
