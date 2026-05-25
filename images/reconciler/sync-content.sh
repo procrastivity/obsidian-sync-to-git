@@ -23,17 +23,18 @@ if ! git rev-parse --verify HEAD >/dev/null 2>&1; then
     git checkout -B "$BRANCH"
 fi
 
-# Update the remote-tracking ref so the "push when ahead but no diff" check
-# below has a current view of origin. Failure is non-fatal — first run has
-# no remote ref yet, and transient network issues shouldn't block the sync.
+# Pull remote state down before doing any local work. This makes the remote
+# canonical for anything outside the vault subpath (.github/, README,
+# LICENSE, etc.) so manual edits to those files survive subsequent syncs.
+# Any unpushed local commits are discarded — the rsync below reconstructs
+# equivalent content from the vault (the source of truth) and commits it
+# fresh, so no actual data is lost. Fetch failure is non-fatal: first run
+# has no remote ref yet, and transient network issues shouldn't block the
+# sync.
 git fetch origin "$BRANCH:refs/remotes/origin/$BRANCH" || true
-
-push_branch() {
-    if ! git push origin "$BRANCH" 2>/dev/null; then
-        echo "fast-forward failed; attempting force-with-lease" >&2
-        git push --force-with-lease origin "$BRANCH"
-    fi
-}
+if git rev-parse --verify "origin/$BRANCH" >/dev/null 2>&1; then
+    git reset --hard "origin/$BRANCH"
+fi
 
 # 1. Reconcile working tree with vault subpath.
 #    --exclude='.git' is critical: target is the repo root, not a subdir,
@@ -43,7 +44,9 @@ push_branch() {
 #    --exclude='.github' protects the per-repo GitHub Action workflow (which
 #    lives only in the content repo, not the vault) from being deleted by
 #    --delete. --exclude='README*' and --exclude='LICENSE*' do the same for
-#    those common repo-root files.
+#    those common repo-root files. The reset above brings down any manual
+#    edits to those files from the remote; these excludes keep them in
+#    place through the rsync.
 rsync -a --delete \
     --exclude='.obsidian' \
     --exclude='.trash' \
@@ -54,19 +57,14 @@ rsync -a --delete \
     --exclude='LICENSE*' \
     "$VAULT/$SUBPATH/" "$REPO/"
 
-# 2. If rsync produced no working-tree changes, we might still have
-#    stranded local commits to push (e.g., a previous push failed due to
-#    transient network issues). Drain those, then exit.
+# 2. If rsync produced no working-tree changes, we're done. The reset above
+#    guarantees there are no stranded local commits — anything unpushed got
+#    discarded and (if still relevant) recreated by the rsync.
 git add -A
 if git diff --staged --quiet; then
-    if git rev-parse --verify "origin/$BRANCH" >/dev/null 2>&1 \
-        && [ "$(git rev-parse HEAD)" != "$(git rev-parse "origin/$BRANCH")" ]; then
-        push_branch
-    fi
     exit 0
 fi
 
-# 3. Commit and push the working-tree changes.
+# 3. Commit and push. Fast-forward only — no force-push, ever.
 git commit -m "sync $(date -u +%FT%TZ)"
-
-push_branch
+git push origin "$BRANCH"
