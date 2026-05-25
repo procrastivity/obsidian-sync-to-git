@@ -11,12 +11,13 @@ This repo publishes two Docker images to GitHub Container Registry:
 
 - `images/obsidian-sync`: Obsidian Headless image.
 - `images/reconciler`: vault-path-to-Git reconciler image.
-- `examples/`: deployment examples.
+- `examples/sync-source`: deployment/Coolify compose example.
+- `examples/example-content`: per-site content repo example.
 - `docs/`: runtime and release notes.
 
 ## Usage
 
-Start from `examples/compose.yaml`, replace `OWNER`, set the required environment variables, then run the one-time Obsidian Headless setup documented in `docs/runtime-contract.md`.
+Start from `examples/sync-source/compose.yaml`, set the required environment variables, then run the one-time Obsidian Headless setup documented in `docs/runtime-contract.md`.
 
 ## Releasing
 

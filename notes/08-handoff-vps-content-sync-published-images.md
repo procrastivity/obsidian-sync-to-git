@@ -57,10 +57,19 @@ content-sync-images/
 │   ├── releasing.md
 │   └── runtime-contract.md
 ├── examples/
-│   └── compose.yaml
+│   ├── sync-source/
+│   │   ├── compose.yaml
+│   │   ├── .env.example
+│   │   ├── .gitignore
+│   │   └── README.md
+│   └── example-content/
+│       ├── .github/
+│       │   └── workflows/
+│       │       └── trigger-pages-build.yml
+│       ├── posts/
+│       │   └── .gitkeep
+│       └── README.md
 ├── README.md
-├── .env.example            # placeholder for now
-├── .gitignore              # placeholder for now
 └── LICENSE                 # if publishing publicly
 ```
 
